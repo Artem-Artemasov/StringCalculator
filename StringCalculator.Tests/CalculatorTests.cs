@@ -51,5 +51,33 @@ namespace StringCalculator.Tests
             //Assert
             Assert.AreEqual(sum, 16);
         }
+
+        [Test]
+        public void Sum__1Plus2Plus11_14Returned()
+        {
+            //Arrange
+            int sum = -1;
+
+            //Act
+            sum = calculator.Add("1,2,11");
+
+            //Assert
+            Assert.AreEqual(sum, 14);
+        }
+
+        [Test]
+        public void Sum_5PlusNewLine6Plus7_18Returned()
+        {
+            //Arrange
+            int sum = -1;
+
+            //Act
+            sum = calculator.Add("5,\n2,11");
+
+            //Assert
+            Assert.AreEqual(sum, 18);
+        }
+
+
     }
 }

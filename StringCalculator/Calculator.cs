@@ -6,32 +6,34 @@ namespace StringCalculator
 {
     public class Calculator:ICalculator
     {
-        private List<int> ToIntList(string numbers)
+        private List<char> delimiters = new List<char>() { ',' };
+
+
+        public bool ChangeDelimiters(string inputDelimeters)
         {
-          List<int> numbers_int = new List<int>() { 0 };
-          int listIndex = 0;
+            delimiters = new List<char>();
 
-            foreach (char simpleNumber in numbers)
+            for (int i = 0; i < inputDelimeters.Length; i++)
             {
-                //Следующее число
-                if (simpleNumber == ',')
-                {
-                    numbers_int.Add(0);
-                    listIndex++;
-                } 
-                //Если число
-                if (simpleNumber >= 48 && simpleNumber <= 57)
-                {
-                    numbers_int[listIndex] *= 10;
-                    numbers_int[listIndex] += simpleNumber - 48;
-                }
+                delimiters.Add(inputDelimeters[i]);
             }
-          return numbers_int;
-        }
 
+            return true;
+        }
+       
         public int Add(string numbers)
         {
             int sum = 0;
+
+            if (numbers.StartsWith("//"))
+            {
+                string delimeters_str = "";
+
+                SplitString(numbers, out numbers, out delimeters_str);
+
+                ChangeDelimiters(delimeters_str);
+            }
+
             var numbers_int = ToIntList(numbers);
 
             foreach(var number in numbers_int)
@@ -41,5 +43,41 @@ namespace StringCalculator
 
             return sum;
         }
+
+        private bool SplitString(string inputString, out string numbers, out string delimeters_str)
+        {
+            int startIndex = inputString.IndexOf("//");
+            int endIndex = inputString.IndexOf("\n");
+
+            delimeters_str = inputString.Substring(startIndex + 2, endIndex - startIndex - 2);
+
+            numbers = inputString.Substring(endIndex + 1, inputString.Length - endIndex - 1);
+
+            return true;
+        }
+        private List<int> ToIntList(string numbers)
+        {
+            List<int> numbers_int = new List<int>() { 0 };
+            int listIndex = 0;
+
+            foreach (char simpleNumber in numbers)
+            {
+                //Следующее число
+                if (delimiters.Contains(simpleNumber))
+                {
+                    numbers_int.Add(0);
+                    listIndex++;
+                }
+                //Если число
+                if (simpleNumber >= 48 && simpleNumber <= 57)
+                {
+                    numbers_int[listIndex] *= 10;
+                    numbers_int[listIndex] += simpleNumber - 48;
+                }
+            }
+            return numbers_int;
+        }
+
+
     }
 }
