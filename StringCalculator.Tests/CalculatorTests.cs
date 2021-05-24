@@ -14,70 +14,72 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Sum_EmptyString_0Returned()
+        public void Add_EmptyString_0Returned()
         {
             //Arrange
-            int sum = -1;
+            int Add = -1;
 
             //Act
-            sum = calculator.Add("");
+            Add = calculator.Add("");
 
             //Assert
-            Assert.AreEqual(sum, 0);
+            Assert.AreEqual(Add, 0);
         }
 
         [Test]
-        public void Sum_7_7Returned()
+        public void Add_7_7Returned()
         {
             //Arrange
-            int sum = -1;
+            int Add = -1;
 
             //Act
-            sum = calculator.Add("7");
+            Add = calculator.Add("7");
 
             //Assert
-            Assert.AreEqual(sum, 7);
+            Assert.AreEqual(Add, 7);
         }
 
         [Test]
-        public void Sum_5Plus11_16Returned()
+        public void Add_5Plus11_16Returned()
         {
             //Arrange
-            int sum = -1;
+            int Add = -1;
 
             //Act
-            sum = calculator.Add("5,11");
+            Add = calculator.Add("5,11");
 
             //Assert
-            Assert.AreEqual(sum, 16);
+            Assert.AreEqual(Add, 16);
         }
 
         [Test]
-        public void Sum__1Plus2Plus11_14Returned()
+        public void Add__1Plus2Plus11_14Returned()
         {
             //Arrange
-            int sum = -1;
+            int Add = -1;
 
             //Act
-            sum = calculator.Add("1,2,11");
+            Add = calculator.Add("1,2,11");
 
             //Assert
-            Assert.AreEqual(sum, 14);
+            Assert.AreEqual(Add, 14);
         }
 
         [Test]
-        public void Sum_5PlusNewLine6Plus7_18Returned()
+        public void Add_5PlusNewLine6Plus7_18Returned()
         {
             //Arrange
-            int sum = -1;
+            int Add = -1;
 
             //Act
-            sum = calculator.Add("5,\n2,11");
+            Add = calculator.Add("5,\n2,11");
 
             //Assert
-            Assert.AreEqual(sum, 18);
+            Assert.AreEqual(Add, 18);
         }
 
+        [Test]
+        public void Add_
 
     }
 }
