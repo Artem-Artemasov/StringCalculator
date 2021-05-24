@@ -104,5 +104,57 @@ namespace StringCalculator.Tests
             //Assert
             Assert.AreEqual(sum, 10);
         }
+
+        [Test]
+        public void Add_1005Plus5_5Returned()
+        {
+            //Arrange
+            int sum = -1;
+
+            //Act
+            sum = calculator.Add("1005,5");
+
+            //Assert
+            Assert.AreEqual(sum, 5);
+        }
+
+        [Test]
+        public void Add_LongDelimeter_10Returned()
+        {
+            //Arrange
+            int sum = -1;
+
+            //Act
+            sum = calculator.Add("//****\n5****5");
+
+            //Assert
+            Assert.AreEqual(sum, 10);
+        }
+        [Test]
+
+        public void Add_ArrayDelimeter_15Returned()
+        {
+            //Arrange
+            int sum = -1;
+
+            //Act
+            sum = calculator.Add("//[*][^]\n5*5^5");
+
+            //Assert
+            Assert.AreEqual(sum, 15);
+        }
+
+        [Test]
+        public void Add_ArrayLongDelimeter_15Returned()
+        {
+            //Arrange
+            int sum = -1;
+
+            //Act
+            sum = calculator.Add("//[**][af]\n5**5af5");
+
+            //Assert
+            Assert.AreEqual(sum, 15);
+        }
     }
 }

@@ -19,7 +19,15 @@ namespace StringCalculator
 
             return true;
         }
-       
+        public bool ChangeDelimiters(IEnumerable<string> inputDelimeters)
+        {
+            delimiters = new List<string>();
+
+            delimiters.AddRange(inputDelimeters);
+
+            return true;
+        }
+
         public int Add(string numbers)
         {
             int sum = 0;
@@ -30,7 +38,17 @@ namespace StringCalculator
 
                 SplitString(numbers, out numbers, out delimeters_str);
 
-                ChangeDelimiters(delimeters_str);
+                var allDelimeters = FindDelimiters(delimeters_str);
+                if (allDelimeters.Count == 0) 
+                {
+                    ChangeDelimiters(delimeters_str);
+                }
+                else
+                {
+                    ChangeDelimiters(allDelimeters);
+                }
+
+
             }
 
             numbers_int = ToIntList(numbers);
@@ -53,6 +71,23 @@ namespace StringCalculator
             numbers = inputString.Substring(endIndex + 1, inputString.Length - endIndex - 1);
 
             return true;
+        }
+        private List<string> FindDelimiters(string delimeters)
+        {
+            List<string> splitedDelimiters = new List<string>();
+
+            while (delimeters.Length != 0)
+            {
+                int endIndexDelimeter = delimeters.IndexOf(']');
+
+                if (endIndexDelimeter == -1) break;
+
+                splitedDelimiters.Add(delimeters.Substring(1, endIndexDelimeter-1));
+
+                delimeters = delimeters.Remove(0, endIndexDelimeter+1);
+            }
+
+            return splitedDelimiters;
         }
         private List<int> ToIntList(string numbers)
         {
