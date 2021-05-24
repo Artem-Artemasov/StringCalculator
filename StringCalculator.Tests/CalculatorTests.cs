@@ -72,14 +72,23 @@ namespace StringCalculator.Tests
             int sum = -1;
 
             //Act
-            sum = calculator.Add("5,\n2,11");
+            sum = calculator.Add("5\n2,11");
 
             //Assert
             Assert.AreEqual(sum, 18);
         }
 
         [Test]
-        public void Add_
+        public void Add_CustomDelimeter_18Returned()
+        {
+            //Arrange
+            int sum = -1;
 
+            //Act
+            sum = calculator.Add("//;\n5;2;11");
+
+            //Assert
+            Assert.AreEqual(sum, 18);
+        }
     }
 }

@@ -1,22 +1,20 @@
 ﻿using StringCalculator.Interfaces;
+using System;
 using System.Collections.Generic;
-
+using StringCalculator.Filtres;
 
 namespace StringCalculator
 {
     public class Calculator:ICalculator
     {
-        private List<char> delimiters = new List<char>() { ',' };
-
+        private List<string> delimiters = new List<string>() { ",", "\n" };
+        private CalculatorFilter filter = new CalculatorFilter(); 
 
         public bool ChangeDelimiters(string inputDelimeters)
         {
-            delimiters = new List<char>();
+            delimiters = new List<string>();
 
-            for (int i = 0; i < inputDelimeters.Length; i++)
-            {
-                delimiters.Add(inputDelimeters[i]);
-            }
+            delimiters.Add(inputDelimeters);
 
             return true;
         }
@@ -34,7 +32,11 @@ namespace StringCalculator
                 ChangeDelimiters(delimeters_str);
             }
 
-            var numbers_int = ToIntList(numbers);
+            List<int> numbers_int = new List<int>();
+
+
+            numbers_int = ToIntList(numbers);
+
 
             foreach(var number in numbers_int)
             {
@@ -58,26 +60,80 @@ namespace StringCalculator
         private List<int> ToIntList(string numbers)
         {
             List<int> numbers_int = new List<int>() { 0 };
-            int listIndex = 0;
 
-            foreach (char simpleNumber in numbers)
+            List<char> allowNumbers = new List<char>() { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
+            //for (int i = 0;i < numbers.Length; i++)
+            while (numbers.Length != 0)
             {
-                //Следующее число
-                if (delimiters.Contains(simpleNumber))
+                int sizeDelimeter = 0;
+
+                string number = numbers.Substring(0, FindIndexDelimeter(numbers, out sizeDelimeter));
+
+                if (filter.IsNegative(number))
                 {
-                    numbers_int.Add(0);
-                    listIndex++;
+                    try
+                    {
+                        throw new Exception($"negatives not allowed {number}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    numbers = numbers.Remove(0, number.Length + sizeDelimeter);
                 }
-                //Если число
-                if (simpleNumber >= 48 && simpleNumber <= 57)
+                else
                 {
-                    numbers_int[listIndex] *= 10;
-                    numbers_int[listIndex] += simpleNumber - 48;
+                    numbers_int.Add(Int32.Parse(number));
+                    numbers = numbers.Remove(0, number.Length + sizeDelimeter);
                 }
+
             }
             return numbers_int;
         }
 
+        private int FindIndexDelimeter(string input,out int sizeDelimeter)
+        {
+            int indexDelimeter = input.Length;
+            sizeDelimeter = 0;
+
+
+            foreach (string delimeter in delimiters)
+            {
+                if (input.IndexOf(delimeter) < indexDelimeter && input.IndexOf(delimeter)!= -1)
+                {
+                    indexDelimeter = input.IndexOf(delimeter);
+                    sizeDelimeter = delimeter.Length;
+                }
+
+            }
+
+            if (indexDelimeter == -1) indexDelimeter = input.Length;
+
+            return indexDelimeter;
+        }
 
     }
 }
+
+
+/*
+ char simpleNumber = numbers[i];
+                //Если число
+                if (allowNumbers.Contains(simpleNumber))
+                {
+                    numbers_int[listIndex] *= 10;
+                    numbers_int[listIndex] += simpleNumber - 48;
+                }
+                else // Разделитель
+                {
+                    foreach(var delimiter in delimiters)
+                    {
+                        if (numbers.IndexOf(delimiter,i) != -1)
+                        {
+                            numbers_int.Add(0);
+                            listIndex++;
+                        }
+                    }
+ } 
+*/
