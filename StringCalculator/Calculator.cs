@@ -1,12 +1,10 @@
-﻿using System;
+﻿using StringCalculator.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace StringCalculator
 {
-    public class StringCalculator
+    public class Calculator:ICalculator
     {
         private List<int> ToIntList(string numbers)
         {
