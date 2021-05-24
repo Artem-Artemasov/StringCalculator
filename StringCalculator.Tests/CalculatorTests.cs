@@ -17,65 +17,65 @@ namespace StringCalculator.Tests
         public void Add_EmptyString_0Returned()
         {
             //Arrange
-            int Add = -1;
+            int sum = -1;
 
             //Act
-            Add = calculator.Add("");
+            sum = calculator.Add("");
 
             //Assert
-            Assert.AreEqual(Add, 0);
+            Assert.AreEqual(sum, 0);
         }
 
         [Test]
         public void Add_7_7Returned()
         {
             //Arrange
-            int Add = -1;
+            int sum = -1;
 
             //Act
-            Add = calculator.Add("7");
+            sum = calculator.Add("7");
 
             //Assert
-            Assert.AreEqual(Add, 7);
+            Assert.AreEqual(sum, 7);
         }
 
         [Test]
         public void Add_5Plus11_16Returned()
         {
             //Arrange
-            int Add = -1;
+            int sum = -1;
 
             //Act
-            Add = calculator.Add("5,11");
+            sum = calculator.Add("5,11");
 
             //Assert
-            Assert.AreEqual(Add, 16);
+            Assert.AreEqual(sum, 16);
         }
 
         [Test]
         public void Add__1Plus2Plus11_14Returned()
         {
             //Arrange
-            int Add = -1;
+            int sum = -1;
 
             //Act
-            Add = calculator.Add("1,2,11");
+            sum = calculator.Add("1,2,11");
 
             //Assert
-            Assert.AreEqual(Add, 14);
+            Assert.AreEqual(sum, 14);
         }
 
         [Test]
         public void Add_5PlusNewLine6Plus7_18Returned()
         {
             //Arrange
-            int Add = -1;
+            int sum = -1;
 
             //Act
-            Add = calculator.Add("5,\n2,11");
+            sum = calculator.Add("5,\n2,11");
 
             //Assert
-            Assert.AreEqual(Add, 18);
+            Assert.AreEqual(sum, 18);
         }
 
         [Test]
