@@ -8,9 +8,17 @@ namespace StringCalculator.Filtres
 {
     class CalculatorFilter
     {
+        private int MaxValue = 1000;
         public bool IsNegative(string number) 
         {
             if (number.StartsWith('-')) return true;
+
+            return false;
+        }
+
+        public bool IsSoBigger(int number)
+        {
+            if (number > MaxValue) return true;
 
             return false;
         }

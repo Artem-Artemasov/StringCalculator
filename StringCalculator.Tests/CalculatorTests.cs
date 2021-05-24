@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using StringCalculator;
 using StringCalculator.Interfaces;
+using System;
 
 namespace StringCalculator.Tests
 {
@@ -89,6 +90,19 @@ namespace StringCalculator.Tests
 
             //Assert
             Assert.AreEqual(sum, 18);
+        }
+
+        [Test] 
+        public void Add_NegativeNumber_10Returned()
+        {
+            //Arrange
+            int sum = -1;
+
+            //Act
+            sum = calculator.Add("-2,10,-5");
+
+            //Assert
+            Assert.AreEqual(sum, 10);
         }
     }
 }

@@ -8,7 +8,8 @@ namespace StringCalculator
     public class Calculator:ICalculator
     {
         private List<string> delimiters = new List<string>() { ",", "\n" };
-        private CalculatorFilter filter = new CalculatorFilter(); 
+        private CalculatorFilter filter = new CalculatorFilter();
+        private List<int> numbers_int = new List<int>();
 
         public bool ChangeDelimiters(string inputDelimeters)
         {
@@ -32,11 +33,7 @@ namespace StringCalculator
                 ChangeDelimiters(delimeters_str);
             }
 
-            List<int> numbers_int = new List<int>();
-
-
             numbers_int = ToIntList(numbers);
-
 
             foreach(var number in numbers_int)
             {
@@ -59,11 +56,6 @@ namespace StringCalculator
         }
         private List<int> ToIntList(string numbers)
         {
-            List<int> numbers_int = new List<int>() { 0 };
-
-            List<char> allowNumbers = new List<char>() { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-
-            //for (int i = 0;i < numbers.Length; i++)
             while (numbers.Length != 0)
             {
                 int sizeDelimeter = 0;
@@ -74,24 +66,34 @@ namespace StringCalculator
                 {
                     try
                     {
-                        throw new Exception($"negatives not allowed {number}");
+                        throw new ArgumentOutOfRangeException($"negatives not allowed {number}");
                     }
-                    catch (Exception ex)
+                    catch (ArgumentOutOfRangeException ex)
                     {
                         Console.WriteLine(ex.Message);
                     }
-                    numbers = numbers.Remove(0, number.Length + sizeDelimeter);
                 }
                 else
                 {
-                    numbers_int.Add(Int32.Parse(number));
-                    numbers = numbers.Remove(0, number.Length + sizeDelimeter);
+                    AddToNumbers(number);
                 }
 
+                numbers = numbers.Remove(0, number.Length + sizeDelimeter);
             }
             return numbers_int;
         }
 
+        private bool AddToNumbers(string number)
+        {
+            int number_int = Int32.Parse(number);
+
+            if (filter.IsSoBigger(number_int) == false)
+            {
+                numbers_int.Add(number_int);
+            }
+
+            return true;
+        }
         private int FindIndexDelimeter(string input,out int sizeDelimeter)
         {
             int indexDelimeter = input.Length;
@@ -115,25 +117,3 @@ namespace StringCalculator
 
     }
 }
-
-
-/*
- char simpleNumber = numbers[i];
-                //Если число
-                if (allowNumbers.Contains(simpleNumber))
-                {
-                    numbers_int[listIndex] *= 10;
-                    numbers_int[listIndex] += simpleNumber - 48;
-                }
-                else // Разделитель
-                {
-                    foreach(var delimiter in delimiters)
-                    {
-                        if (numbers.IndexOf(delimiter,i) != -1)
-                        {
-                            numbers_int.Add(0);
-                            listIndex++;
-                        }
-                    }
- } 
-*/
