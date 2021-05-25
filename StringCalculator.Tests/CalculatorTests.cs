@@ -41,19 +41,21 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_5Plus11_ShouldReturn16()
+        [TestCase("5,11",16)]
+        [TestCase("1,2,11",14)]
+        public void Add_SummNumbers_ShouldReturnResult(string numbers,int result)
         {
             //Arrange
             int sum = -1;
 
             //Act
-            sum = calculator.Add("5,11");
+            sum = calculator.Add(numbers);
 
             //Assert
-            Assert.AreEqual(sum, 16);
+            Assert.AreEqual(sum, result);
         }
 
-        [Test]
+       /* [Test]
         public void Add__1Plus2Plus11_ShouldReturn14()
         {
             //Arrange
@@ -65,7 +67,7 @@ namespace StringCalculator.Tests
             //Assert
             Assert.AreEqual(sum, 14);
         }
-
+*/
         [Test]
         public void Add_5PlusNewLine6Plus7_ShouldReturn18()
         {

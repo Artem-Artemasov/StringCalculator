@@ -46,6 +46,7 @@ namespace StringCalculator
 
             return sum;
         }
+
         private bool ChangeDelimiters(string inputDelimeters)
         {
             delimiters = new List<string>();
@@ -63,6 +64,7 @@ namespace StringCalculator
 
             return true;
         }
+
         private bool SplitString(string inputString, out string numbers, out string delimeters_str)
         {
             int startIndex = inputString.IndexOf("//");
@@ -74,6 +76,7 @@ namespace StringCalculator
 
             return true;
         }
+
         //Ищет и разделяет все разделители чисел
         private List<string> FindAllDelimiters(string delimeters)
         {
@@ -91,6 +94,7 @@ namespace StringCalculator
 
             return splitedDelimiters;
         }
+
         // Конвертирует числа и добавляет их в пул
         private bool AddToPull(string numbers)
         {
@@ -113,6 +117,8 @@ namespace StringCalculator
 
             return true;
         }
+
+        //Ищет первое вхождение любого разделителя и возражает его позицию и размер
         private int FindPositionDelimeter(string input,out int sizeDelimeter)
         {
             int indexDelimeter = input.Length;
