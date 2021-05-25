@@ -9,11 +9,12 @@ namespace StringCalculator
     {
         private readonly CalculatorFilter filter = new CalculatorFilter();
         private List<string> delimiters = new List<string>() { ",", "\n" };
-        private List<int> numbersPull = new List<int>();
+        private List<int> numbersPull;
 
         public virtual int Add(string numbers)
         {
             int sum = 0;
+            numbersPull = new List<int>();
 
             if (numbers.StartsWith("//"))
             {
