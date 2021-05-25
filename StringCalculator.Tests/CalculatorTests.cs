@@ -8,6 +8,7 @@ namespace StringCalculator.Tests
     public class CalculatorTests
     {
         private ICalculator calculator;
+
         [SetUp]
         public void Init()
         {
@@ -17,78 +18,48 @@ namespace StringCalculator.Tests
         [Test]
         public void Add_EmptyString_ShouldReturn0()
         {
-            //Arrange
-            int sum = -1;
-
             //Act
-            sum = calculator.Add("");
+            var sum = calculator.Add("");
 
             //Assert
             Assert.AreEqual(sum, 0);
         }
 
         [Test]
-        public void Add_7_ShouldReturn7()
+        public void Add_OneNumber_ShouldReturnThisNumber()
         {
-            //Arrange
-            int sum = -1;
-
             //Act
-            sum = calculator.Add("7");
+            var sum = calculator.Add("7");
 
             //Assert
             Assert.AreEqual(sum, 7);
         }
 
         [Test]
-        [TestCase("5,11",16)]
-        [TestCase("1,2,11",14)]
-        public void Add_SummNumbers_ShouldReturnResult(string numbers,int result)
+        public void Add_ManyNumber_ShouldReturnCorrectSum()
         {
-            //Arrange
-            int sum = -1;
-
             //Act
-            sum = calculator.Add(numbers);
+            var sum = calculator.Add("1,2,11,22");
 
             //Assert
-            Assert.AreEqual(sum, result);
+            Assert.AreEqual(sum, 26);
         }
 
-       /* [Test]
-        public void Add__1Plus2Plus11_ShouldReturn14()
-        {
-            //Arrange
-            int sum = -1;
-
-            //Act
-            sum = calculator.Add("1,2,11");
-
-            //Assert
-            Assert.AreEqual(sum, 14);
-        }
-*/
         [Test]
-        public void Add_5PlusNewLine6Plus7_ShouldReturn18()
+        public void Add_SupportNewLineSymbol_ShouldReturnCorrectSum()
         {
-            //Arrange
-            int sum = -1;
-
             //Act
-            sum = calculator.Add("5\n2,11");
+            var sum = calculator.Add("5\n2,11");
 
             //Assert
             Assert.AreEqual(sum, 18);
         }
 
         [Test]
-        public void Add_CustomDelimeter_ShouldReturn18()
+        public void Add_CustomDelimeter_ShouldReturnSum()
         {
-            //Arrange
-            int sum = -1;
-
             //Act
-            sum = calculator.Add("//;\n5;2;11");
+            var sum = calculator.Add("//;\n5;2;11");
 
             //Assert
             Assert.AreEqual(sum, 18);
@@ -99,64 +70,48 @@ namespace StringCalculator.Tests
         [TestCase("-2,10,-5", "Specified argument was out of the range of valid values. (Parameter 'negative not allowed -2; -5; ')")]
         public void Add_NegativeNumber_ShouldThrowException(string numbers,string exceptionMessage)
         {
-            //Arrange
-            int sum = -1;
-
             //Act
-            
-            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => { sum = calculator.Add(numbers); });
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => { calculator.Add(numbers); });
 
             //Assert
             Assert.AreEqual(exceptionMessage, exception.Message);
         }
 
         [Test]
-        public void Add_1005Plus5_ShouldReturn5()
+        public void Add_BigNumber_ShouldSkipIt()
         {
-            //Arrange
-            int sum = -1;
-
             //Act
-            sum = calculator.Add("1005,5");
+            var sum = calculator.Add("1005,5");
 
             //Assert
             Assert.AreEqual(sum, 5);
         }
 
         [Test]
-        public void Add_LongDelimeter_ShouldReturn10()
+        public void Add_LongDelimeter_ShouldReturnSum()
         {
-            //Arrange
-            int sum = -1;
-
             //Act
-            sum = calculator.Add("//****\n5****5");
+            var sum = calculator.Add("//****\n5****5");
 
             //Assert
             Assert.AreEqual(sum, 10);
         }
 
         [Test]
-        public void Add_ArrayDelimeter_ShouldReturn15()
+        public void Add_ArrayOfDelimeter_ShouldReturnCorrectSum()
         {
-            //Arrange
-            int sum = -1;
-
             //Act
-            sum = calculator.Add("//[*][^]\n5*5^5");
+            var sum = calculator.Add("//[*][^]\n5*5^5");
 
             //Assert
             Assert.AreEqual(sum, 15);
         }
 
         [Test]
-        public void Add_ArrayLongDelimeter_ShouldReturn15()
+        public void Add_ArrayLongDelimeters_ShouldReturnCorrectSum()
         {
-            //Arrange
-            int sum = -1;
-
             //Act
-            sum = calculator.Add("//[**][af]\n5**5af5");
+            var sum = calculator.Add("//[**][af]\n5**5af5");
 
             //Assert
             Assert.AreEqual(sum, 15);

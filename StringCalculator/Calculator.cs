@@ -8,38 +8,24 @@ namespace StringCalculator
     public class Calculator:ICalculator
     {
         private readonly CalculatorFilter filter = new CalculatorFilter();
-        private List<string> delimiters = new List<string>() { ",", "\n" };
-        private List<int> numbersPull;
 
         public virtual int Add(string numbers)
         {
             int sum = 0;
-            numbersPull = new List<int>();
 
-            if (numbers.StartsWith("//"))
-            {
-                string delimeters_str = "";
-                SplitString(numbers, out numbers, out delimeters_str);
+            SplitString(numbers, out numbers, out string delimiters_str);
 
-                ChangeDelimiters(delimeters_str);
-            }
+            var delimiters = ChangeDelimiters(delimiters_str);
 
-            AddToPull(numbers);
+            var numberList = SplitNumbers(numbers, delimiters);
 
-            //add all negative numbers to string and remove it from pull
-            string negativeNumbers = "";
-            foreach(var number in numbersPull)
-            {
-                if (filter.IsNegative(number))
-                {
-                    negativeNumbers += number + "; ";
-                }
-            }
-            numbersPull.RemoveAll(p => filter.IsNegative(p));
+            var dirtyNumbers = ToIntList(numberList);
 
+            var cleanNumbers = CleanList(dirtyNumbers, out string negativeNumbers);
+           
             if (negativeNumbers.Length > 0) throw new ArgumentOutOfRangeException("negative not allowed " + negativeNumbers);
 
-            foreach(var number in numbersPull)
+            foreach(var number in cleanNumbers)
             {
                 sum += number;
             }
@@ -47,95 +33,126 @@ namespace StringCalculator
             return sum;
         }
 
-        private bool ChangeDelimiters(string inputDelimeters)
+        public List<int> CleanList(in List<int> numbers, out string negativeNumbers)
         {
-            delimiters = new List<string>();
-
-            var allDelimeters = FindAllDelimiters(inputDelimeters);
-
-            if (allDelimeters.Count == 0)
+            negativeNumbers = "";
+            foreach (var number in numbers)
             {
-                delimiters.Add(inputDelimeters);
+                if (filter.IsNegative(number))
+                {
+                    negativeNumbers += number + "; ";
+                }
             }
-            else
+            numbers.RemoveAll(p => filter.IsNegative(p));
+
+            return numbers;
+        }
+        private List<string> ChangeDelimiters(string delimiters_str)
+        {
+            var delimiters = new List<string>() { ",","\n"};
+
+            if (delimiters_str.StartsWith("//"))
             {
-                delimiters.AddRange(allDelimeters);
+                var allDelimeters = FindAllDelimiters(delimiters_str);
+
+                if (allDelimeters.Count != 0)
+                {
+                    delimiters.AddRange(allDelimeters);
+                }
             }
 
-            return true;
+            return delimiters;
         }
 
         private bool SplitString(string inputString, out string numbers, out string delimeters_str)
         {
-            int startIndex = inputString.IndexOf("//");
-            int endIndex = inputString.IndexOf("\n");
+            //Setup default variable
+            numbers = inputString;
+            delimeters_str = "";
 
-            delimeters_str = inputString.Substring(startIndex + 2, endIndex - startIndex - 2);
+            string startDelimiters = "//";
+            string endDelimiters   = "\n";
 
-            numbers = inputString.Substring(endIndex + 1, inputString.Length - endIndex - 1);
+            int startPosDelimiters = inputString.IndexOf(startDelimiters);
+            int endPosDelimiters   = inputString.IndexOf(endDelimiters);
+
+            if (startPosDelimiters == -1 || endPosDelimiters == -1) return false;
+
+            delimeters_str = inputString.Substring(startPosDelimiters , endPosDelimiters + endDelimiters.Length);
+
+            numbers = inputString.Substring(endPosDelimiters + endDelimiters.Length, inputString.Length - endPosDelimiters - endDelimiters.Length);
 
             return true;
         }
 
-        //Ищет и разделяет все разделители чисел
+        //Find and split delimiters
         private List<string> FindAllDelimiters(string delimeters)
         {
             List<string> splitedDelimiters = new List<string>();
 
-            while (delimeters.Length != 0)
+            var dirtySplitedDelimiters = delimeters.Split(new char[] { '[', ']' });
+
+            //First and end symbol // and \n
+            for (int i = 1; i < dirtySplitedDelimiters.Length - 1; i++)
             {
-                int endIndexDelimeter = delimeters.IndexOf(']');
-
-                if (endIndexDelimeter == -1) break;
-
-                splitedDelimiters.Add(delimeters[1..endIndexDelimeter]);
-                delimeters = delimeters.Remove(0, endIndexDelimeter+1);
+                if (dirtySplitedDelimiters[i] != "") splitedDelimiters.Add(dirtySplitedDelimiters[i]);
             }
 
             return splitedDelimiters;
         }
 
-        // Конвертирует числа и добавляет их в пул
-        private bool AddToPull(string numbers)
+        private List<int> ToIntList(in List<string> numbers)
         {
+            List<int> convertedNumbers = new List<int>();
 
-            while (numbers.Length != 0)
+           foreach(var number in numbers)
             {
-                int sizeDelimeter = 0;
-
-                string number = numbers.Substring(0, FindPositionDelimeter(numbers, out sizeDelimeter));
-
                 int number_int = Int32.Parse(number);
 
                 if (filter.IsSoBigger(number_int) == false)
                 {
-                    numbersPull.Add(number_int);
+                    convertedNumbers.Add(number_int);
                 }
+            }
+
+            return convertedNumbers;
+        }
+
+        private List<string> SplitNumbers(string numbers,List<string> delimiters)
+        {
+            List<string> numberList = new List<string>();
+            while (numbers.Length != 0)
+            {
+                int sizeDelimeter = 0;
+
+                string number = numbers.Substring(0, FindPositionDelimeter(numbers,delimiters, out sizeDelimeter));
+
+                numberList.Add(number);
 
                 numbers = numbers.Remove(0, number.Length + sizeDelimeter);
             }
 
-            return true;
+            return numberList;
         }
 
-        //Ищет первое вхождение любого разделителя и возражает его позицию и размер
-        private int FindPositionDelimeter(string input,out int sizeDelimeter)
+        //Find first injection on input and return pos and size
+        private int FindPositionDelimeter(string input,List<string> delimiters,out int sizeDelimeter)
         {
-            int indexDelimeter = input.Length;
+            int minIndexDelimiter = input.Length;
             sizeDelimeter = 0;
 
             foreach (string delimeter in delimiters)
             {
-                if (input.IndexOf(delimeter) < indexDelimeter && input.IndexOf(delimeter)!= -1)
+                if ((input.IndexOf(delimeter) < minIndexDelimiter) && (input.IndexOf(delimeter) != -1))
                 {
-                    indexDelimeter = input.IndexOf(delimeter);
+                    minIndexDelimiter = input.IndexOf(delimeter);
                     sizeDelimeter = delimeter.Length;
                 }
             }
 
-            if (indexDelimeter == -1) indexDelimeter = input.Length;
+            if (minIndexDelimiter == -1) minIndexDelimiter = input.Length;
 
-            return indexDelimeter;
+            return minIndexDelimiter;
         }
 
     }
