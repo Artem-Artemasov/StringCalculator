@@ -33,7 +33,7 @@ namespace StringCalculator
             return sum;
         }
 
-        public List<int> CleanList(in List<int> numbers, out string negativeNumbers)
+        private List<int> CleanList(in List<int> numbers, out string negativeNumbers)
         {
             negativeNumbers = "";
             foreach (var number in numbers)
@@ -57,7 +57,12 @@ namespace StringCalculator
 
                 if (allDelimeters.Count != 0)
                 {
-                    delimiters.AddRange(allDelimeters);
+                    delimiters = allDelimeters;
+                }
+                else
+                {
+                    //2 and 1 because start with // and end with \n
+                    delimiters = new List<string>() { delimiters_str[2..(delimiters_str.Length - 1)] };
                 }
             }
 

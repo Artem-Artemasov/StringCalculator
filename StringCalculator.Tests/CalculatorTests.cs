@@ -42,7 +42,7 @@ namespace StringCalculator.Tests
             var sum = calculator.Add("1,2,11,22");
 
             //Assert
-            Assert.AreEqual(sum, 26);
+            Assert.AreEqual(sum, 36);
         }
 
         [Test]
