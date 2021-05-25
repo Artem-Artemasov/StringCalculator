@@ -11,25 +11,7 @@ namespace StringCalculator
         private List<string> delimiters = new List<string>() { ",", "\n" };
         private List<int> numbersPull = new List<int>();
 
-        public bool ChangeDelimiters(string inputDelimeters)
-        {
-            delimiters = new List<string>();
-
-            var allDelimeters = FindAllDelimiters(inputDelimeters);
-
-            if (allDelimeters.Count == 0)
-            {
-                delimiters.Add(inputDelimeters);
-            }
-            else
-            {
-                delimiters.AddRange(allDelimeters);
-            }
-
-            return true;
-        }
-
-        public int Add(string numbers)
+        public virtual int Add(string numbers)
         {
             int sum = 0;
 
@@ -63,7 +45,23 @@ namespace StringCalculator
 
             return sum;
         }
+        private bool ChangeDelimiters(string inputDelimeters)
+        {
+            delimiters = new List<string>();
 
+            var allDelimeters = FindAllDelimiters(inputDelimeters);
+
+            if (allDelimeters.Count == 0)
+            {
+                delimiters.Add(inputDelimeters);
+            }
+            else
+            {
+                delimiters.AddRange(allDelimeters);
+            }
+
+            return true;
+        }
         private bool SplitString(string inputString, out string numbers, out string delimeters_str)
         {
             int startIndex = inputString.IndexOf("//");
