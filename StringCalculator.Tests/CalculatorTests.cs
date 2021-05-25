@@ -15,7 +15,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_EmptyString_0Returned()
+        public void Add_EmptyString_ShouldReturn0()
         {
             //Arrange
             int sum = -1;
@@ -28,7 +28,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_7_7Returned()
+        public void Add_7_ShouldReturn7()
         {
             //Arrange
             int sum = -1;
@@ -41,7 +41,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_5Plus11_16Returned()
+        public void Add_5Plus11_ShouldReturn16()
         {
             //Arrange
             int sum = -1;
@@ -54,7 +54,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add__1Plus2Plus11_14Returned()
+        public void Add__1Plus2Plus11_ShouldReturn14()
         {
             //Arrange
             int sum = -1;
@@ -67,7 +67,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_5PlusNewLine6Plus7_18Returned()
+        public void Add_5PlusNewLine6Plus7_ShouldReturn18()
         {
             //Arrange
             int sum = -1;
@@ -80,7 +80,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_CustomDelimeter_18Returned()
+        public void Add_CustomDelimeter_ShouldReturn18()
         {
             //Arrange
             int sum = -1;
@@ -92,21 +92,24 @@ namespace StringCalculator.Tests
             Assert.AreEqual(sum, 18);
         }
 
-        [Test] 
-        public void Add_NegativeNumber_10Returned()
+        [Test]
+        [TestCase("-2,10,5", "Specified argument was out of the range of valid values. (Parameter 'negative not allowed -2; ')")]
+        [TestCase("-2,10,-5", "Specified argument was out of the range of valid values. (Parameter 'negative not allowed -2; -5; ')")]
+        public void Add_NegativeNumber_ShouldThrowException(string numbers,string exceptionMessage)
         {
             //Arrange
             int sum = -1;
 
             //Act
-            sum = calculator.Add("-2,10,-5");
+            
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => { sum = calculator.Add(numbers); });
 
             //Assert
-            Assert.AreEqual(sum, 10);
+            Assert.AreEqual(exceptionMessage, exception.Message);
         }
 
         [Test]
-        public void Add_1005Plus5_5Returned()
+        public void Add_1005Plus5_ShouldReturn5()
         {
             //Arrange
             int sum = -1;
@@ -119,7 +122,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_LongDelimeter_10Returned()
+        public void Add_LongDelimeter_ShouldReturn10()
         {
             //Arrange
             int sum = -1;
@@ -130,9 +133,9 @@ namespace StringCalculator.Tests
             //Assert
             Assert.AreEqual(sum, 10);
         }
-        [Test]
 
-        public void Add_ArrayDelimeter_15Returned()
+        [Test]
+        public void Add_ArrayDelimeter_ShouldReturn15()
         {
             //Arrange
             int sum = -1;
@@ -145,7 +148,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_ArrayLongDelimeter_15Returned()
+        public void Add_ArrayLongDelimeter_ShouldReturn15()
         {
             //Arrange
             int sum = -1;

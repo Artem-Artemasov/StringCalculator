@@ -7,23 +7,24 @@ namespace StringCalculator
 {
     public class Calculator:ICalculator
     {
+        private readonly CalculatorFilter filter = new CalculatorFilter();
         private List<string> delimiters = new List<string>() { ",", "\n" };
-        private CalculatorFilter filter = new CalculatorFilter();
-        private List<int> numbers_int = new List<int>();
+        private List<int> numbersPull = new List<int>();
 
         public bool ChangeDelimiters(string inputDelimeters)
         {
             delimiters = new List<string>();
 
-            delimiters.Add(inputDelimeters);
+            var allDelimeters = FindAllDelimiters(inputDelimeters);
 
-            return true;
-        }
-        public bool ChangeDelimiters(IEnumerable<string> inputDelimeters)
-        {
-            delimiters = new List<string>();
-
-            delimiters.AddRange(inputDelimeters);
+            if (allDelimeters.Count == 0)
+            {
+                delimiters.Add(inputDelimeters);
+            }
+            else
+            {
+                delimiters.AddRange(allDelimeters);
+            }
 
             return true;
         }
@@ -35,25 +36,27 @@ namespace StringCalculator
             if (numbers.StartsWith("//"))
             {
                 string delimeters_str = "";
-
                 SplitString(numbers, out numbers, out delimeters_str);
 
-                var allDelimeters = FindDelimiters(delimeters_str);
-                if (allDelimeters.Count == 0) 
-                {
-                    ChangeDelimiters(delimeters_str);
-                }
-                else
-                {
-                    ChangeDelimiters(allDelimeters);
-                }
-
-
+                ChangeDelimiters(delimeters_str);
             }
 
-            numbers_int = ToIntList(numbers);
+            AddToPull(numbers);
 
-            foreach(var number in numbers_int)
+            //add all negative numbers to string and remove it from pull
+            string negativeNumbers = "";
+            foreach(var number in numbersPull)
+            {
+                if (filter.IsNegative(number))
+                {
+                    negativeNumbers += number + "; ";
+                }
+            }
+            numbersPull.RemoveAll(p => filter.IsNegative(p));
+
+            if (negativeNumbers.Length > 0) throw new ArgumentOutOfRangeException("negative not allowed " + negativeNumbers);
+
+            foreach(var number in numbersPull)
             {
                 sum += number;
             }
@@ -72,7 +75,8 @@ namespace StringCalculator
 
             return true;
         }
-        private List<string> FindDelimiters(string delimeters)
+        //Ищет и разделяет все разделители чисел
+        private List<string> FindAllDelimiters(string delimeters)
         {
             List<string> splitedDelimiters = new List<string>();
 
@@ -82,58 +86,38 @@ namespace StringCalculator
 
                 if (endIndexDelimeter == -1) break;
 
-                splitedDelimiters.Add(delimeters.Substring(1, endIndexDelimeter-1));
-
+                splitedDelimiters.Add(delimeters[1..endIndexDelimeter]);
                 delimeters = delimeters.Remove(0, endIndexDelimeter+1);
             }
 
             return splitedDelimiters;
         }
-        private List<int> ToIntList(string numbers)
+        // Конвертирует числа и добавляет их в пул
+        private bool AddToPull(string numbers)
         {
+
             while (numbers.Length != 0)
             {
                 int sizeDelimeter = 0;
 
-                string number = numbers.Substring(0, FindIndexDelimeter(numbers, out sizeDelimeter));
+                string number = numbers.Substring(0, FindPositionDelimeter(numbers, out sizeDelimeter));
 
-                if (filter.IsNegative(number))
+                int number_int = Int32.Parse(number);
+
+                if (filter.IsSoBigger(number_int) == false)
                 {
-                    try
-                    {
-                        throw new ArgumentOutOfRangeException($"negatives not allowed {number}");
-                    }
-                    catch (ArgumentOutOfRangeException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-                else
-                {
-                    AddToNumbers(number);
+                    numbersPull.Add(number_int);
                 }
 
                 numbers = numbers.Remove(0, number.Length + sizeDelimeter);
             }
-            return numbers_int;
-        }
-
-        private bool AddToNumbers(string number)
-        {
-            int number_int = Int32.Parse(number);
-
-            if (filter.IsSoBigger(number_int) == false)
-            {
-                numbers_int.Add(number_int);
-            }
 
             return true;
         }
-        private int FindIndexDelimeter(string input,out int sizeDelimeter)
+        private int FindPositionDelimeter(string input,out int sizeDelimeter)
         {
             int indexDelimeter = input.Length;
             sizeDelimeter = 0;
-
 
             foreach (string delimeter in delimiters)
             {
@@ -142,7 +126,6 @@ namespace StringCalculator
                     indexDelimeter = input.IndexOf(delimeter);
                     sizeDelimeter = delimeter.Length;
                 }
-
             }
 
             if (indexDelimeter == -1) indexDelimeter = input.Length;

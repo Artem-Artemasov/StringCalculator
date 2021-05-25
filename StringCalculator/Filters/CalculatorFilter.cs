@@ -9,9 +9,9 @@ namespace StringCalculator.Filtres
     class CalculatorFilter
     {
         private int MaxValue = 1000;
-        public bool IsNegative(string number) 
+        public bool IsNegative(int number) 
         {
-            if (number.StartsWith('-')) return true;
+            if (number < 0) return true;
 
             return false;
         }
