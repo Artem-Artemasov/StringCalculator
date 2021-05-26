@@ -109,7 +109,7 @@ namespace StringCalculator.Tests
         public void Add_SupportBracketAsDelimiter_ShouldSupportIt()
         {
             //Act
-            var sum = calculator.Add("//[]]\n5]5]5");
+            var sum = calculator.Add("//[[]\n5[5[5");
 
             //Assert
             Assert.AreEqual(sum, 15);

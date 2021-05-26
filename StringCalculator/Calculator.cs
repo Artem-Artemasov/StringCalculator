@@ -33,7 +33,7 @@ namespace StringCalculator
 
             return sum;
         }
-
+        //Remove all negative numbers and return it to out string
         private List<int> CleanList(in List<int> numbers, out string negativeNumbers)
         {
             negativeNumbers = "";
@@ -101,7 +101,16 @@ namespace StringCalculator
             //Example //[x][a]\n => x][a
             delimiters = delimiters[3..(delimiters.Length - 2)];
 
-            splitedDelimiters = (delimiters.Split("][")).ToList();
+            if (delimiters.Length == 1)
+            {
+                splitedDelimiters.Add(delimiters);
+            }
+            else
+            {
+                splitedDelimiters = (delimiters.Split("][")).ToList();
+            }
+
+
 
             return splitedDelimiters;
         }
@@ -122,7 +131,7 @@ namespace StringCalculator
 
             return convertedNumbers;
         }
-
+        
         private List<string> SplitNumbers(string numbers,List<string> delimiters)
         {
             List<string> numberList = new List<string>();
