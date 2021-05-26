@@ -1,13 +1,12 @@
 using NUnit.Framework;
 using StringCalculator;
-using StringCalculator.Interfaces;
 using System;
 
 namespace StringCalculator.Tests
 {
     public class CalculatorTests
     {
-        private ICalculator calculator;
+        private Calculator calculator;
 
         [SetUp]
         public void SetUp()
@@ -16,7 +15,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_EmptyString_ShouldReturn0()
+        public void Add_EmptyString_ReturnZero()
         {
             //Act
             var sum = calculator.Add("");
@@ -26,7 +25,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_OneNumber_ShouldReturnThisNumber()
+        public void Add_OneNumber_ReturnThisNumber()
         {
             //Act
             var sum = calculator.Add("7");
@@ -36,7 +35,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_ManyNumber_ShouldReturnCorrectSumIt()
+        public void Add_ManyNumber_ReturnCorrectSumIt()
         {
             //Act
             var sum = calculator.Add("1,4,15");
@@ -56,7 +55,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_CustomDelimeter_ShouldSupportIt()
+        public void Add_CustomDelimiter_ShouldSupportIt()
         {
             //Act
             var sum = calculator.Add("//;\n5;2;11");
@@ -86,7 +85,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_MultiCharacterDelimeter_ShouldSupportIt()
+        public void Add_MultiCharacterDelimiter_ShouldSupportIt()
         {
             //Act
             var sum = calculator.Add("//****\n5****5");
@@ -106,7 +105,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_SupportBracketAsDelimiter_ShouldSupportIt()
+        public void Add_BracketAsDelimiter_ShouldSupportIt()
         {
             //Act
             var sum = calculator.Add("//[[]\n5[5[5");

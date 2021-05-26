@@ -1,39 +1,34 @@
-﻿using StringCalculator.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using StringCalculator.Filtres;
 using System.Linq;
 
 namespace StringCalculator
 {
-    public class Calculator:ICalculator
+    public class Calculator
     {
         private readonly CalculatorFilter filter = new CalculatorFilter();
 
         public virtual int Add(string numbers)
         {
-            int sum = 0;
-
             SplitString(numbers, out numbers, out string delimiters_str);
 
             var delimiters = ChangeDelimiters(delimiters_str);
-
             var numberList = SplitNumbers(numbers, delimiters);
-
             var dirtyNumbers = ToIntList(numberList);
-
             var cleanNumbers = CleanList(dirtyNumbers, out string negativeNumbers);
            
             if (negativeNumbers.Length > 0) throw new ArgumentOutOfRangeException("negative not allowed " + negativeNumbers);
 
-            foreach(var number in cleanNumbers)
-            {
-                sum += number;
-            }
-
-            return sum;
+            return cleanNumbers.Sum();
         }
-        //Remove all negative numbers and return it to out string
+
+        /// <summary>
+        ///  Move negative numbers from input list to output string
+        /// </summary>
+        /// <param name="numbers"></param>
+        /// <param name="negativeNumbers"></param>
+        /// <returns></returns>
         private List<int> CleanList(in List<int> numbers, out string negativeNumbers)
         {
             negativeNumbers = "";
@@ -79,7 +74,6 @@ namespace StringCalculator
 
             string startDelimiters = "//";
             string endDelimiters   = "\n";
-
             int startPosDelimiters = inputString.IndexOf(startDelimiters);
             int endPosDelimiters   = inputString.IndexOf(endDelimiters);
 
@@ -92,7 +86,11 @@ namespace StringCalculator
             return true;
         }
 
-        //Find and split delimiters
+        /// <summary>
+        /// Find and split all delimiters in input string 
+        /// </summary>
+        /// <param name="delimiters"></param>
+        /// <returns></returns>
         private List<string> FindAllDelimiters(string delimiters)
         {
             List<string> splitedDelimiters = new List<string>();
@@ -109,8 +107,6 @@ namespace StringCalculator
             {
                 splitedDelimiters = (delimiters.Split("][")).ToList();
             }
-
-
 
             return splitedDelimiters;
         }
@@ -149,7 +145,6 @@ namespace StringCalculator
             return numberList;
         }
 
-        //Find first injection on input and return pos and size
         private int FindPositionDelimeter(string input,List<string> delimiters,out int sizeDelimeter)
         {
             int minIndexDelimiter = input.Length;

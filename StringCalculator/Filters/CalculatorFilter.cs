@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StringCalculator.Filtres
 {
-    class CalculatorFilter
+    public class CalculatorFilter
     {
         private int MaxValue = 1000;
         public bool IsNegative(int number) 
