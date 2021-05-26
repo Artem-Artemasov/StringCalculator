@@ -18,7 +18,8 @@ namespace StringCalculator
             var dirtyNumbers = ToIntList(numberList);
             var cleanNumbers = CleanList(dirtyNumbers, out string negativeNumbers);
            
-            if (negativeNumbers.Length > 0) throw new ArgumentOutOfRangeException("negative not allowed " + negativeNumbers);
+            if (negativeNumbers.Length > 0) 
+                    throw new ArgumentOutOfRangeException("negative not allowed " + negativeNumbers);
 
             return cleanNumbers.Sum();
         }
@@ -77,7 +78,8 @@ namespace StringCalculator
             int startPosDelimiters = inputString.IndexOf(startDelimiters);
             int endPosDelimiters   = inputString.IndexOf(endDelimiters);
 
-            if (startPosDelimiters == -1 || endPosDelimiters == -1) return false;
+            if (startPosDelimiters == -1 || endPosDelimiters == -1) 
+                    return false;
 
             delimeters_str = inputString.Substring(startPosDelimiters , endPosDelimiters + endDelimiters.Length);
 
@@ -120,9 +122,8 @@ namespace StringCalculator
                 int number_int = Int32.Parse(number);
 
                 if (filter.IsSoBigger(number_int) == false)
-                {
-                    convertedNumbers.Add(number_int);
-                }
+                        convertedNumbers.Add(number_int);
+
             }
 
             return convertedNumbers;
@@ -159,7 +160,8 @@ namespace StringCalculator
                 }
             }
 
-            if (minIndexDelimiter == -1) minIndexDelimiter = input.Length;
+            if (minIndexDelimiter == -1) 
+                    minIndexDelimiter = input.Length;
 
             return minIndexDelimiter;
         }
