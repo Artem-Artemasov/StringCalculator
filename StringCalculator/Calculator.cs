@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using StringCalculator.Filtres;
+using System.Linq;
 
 namespace StringCalculator
 {
@@ -65,6 +66,7 @@ namespace StringCalculator
                     delimiters = new List<string>() { delimiters_str[2..(delimiters_str.Length - 1)] };
                 }
             }
+           
 
             return delimiters;
         }
@@ -91,17 +93,15 @@ namespace StringCalculator
         }
 
         //Find and split delimiters
-        private List<string> FindAllDelimiters(string delimeters)
+        private List<string> FindAllDelimiters(string delimiters)
         {
             List<string> splitedDelimiters = new List<string>();
 
-            var dirtySplitedDelimiters = delimeters.Split(new char[] { '[', ']' });
+            if (delimiters.IndexOf('[') == -1 && delimiters.IndexOf(']') == -1) return splitedDelimiters;
+            //Example //[x][a]\n => x][a
+            delimiters = delimiters[3..(delimiters.Length - 2)];
 
-            //First and end symbol // and \n
-            for (int i = 1; i < dirtySplitedDelimiters.Length - 1; i++)
-            {
-                if (dirtySplitedDelimiters[i] != "") splitedDelimiters.Add(dirtySplitedDelimiters[i]);
-            }
+            splitedDelimiters = (delimiters.Split("][")).ToList();
 
             return splitedDelimiters;
         }

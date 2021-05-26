@@ -10,9 +10,9 @@ namespace StringCalculator.Tests
         private ICalculator calculator;
 
         [SetUp]
-        public void Init()
+        public void SetUp()
         {
-            this.calculator = new Calculator();
+            calculator = new Calculator();
         }
 
         [Test]
@@ -36,17 +36,17 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_ManyNumber_ShouldReturnCorrectSum()
+        public void Add_ManyNumber_ShouldReturnCorrectSumIt()
         {
             //Act
-            var sum = calculator.Add("1,2,11,22");
+            var sum = calculator.Add("1,4,15");
 
             //Assert
-            Assert.AreEqual(sum, 36);
+            Assert.AreEqual(sum, 20);
         }
 
         [Test]
-        public void Add_SupportNewLineSymbol_ShouldReturnCorrectSum()
+        public void Add_NewLineSymbol_ShouldSupportIt()
         {
             //Act
             var sum = calculator.Add("5\n2,11");
@@ -56,7 +56,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_CustomDelimeter_ShouldReturnSum()
+        public void Add_CustomDelimeter_ShouldSupportIt()
         {
             //Act
             var sum = calculator.Add("//;\n5;2;11");
@@ -66,15 +66,13 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        [TestCase("-2,10,5", "Specified argument was out of the range of valid values. (Parameter 'negative not allowed -2; ')")]
-        [TestCase("-2,10,-5", "Specified argument was out of the range of valid values. (Parameter 'negative not allowed -2; -5; ')")]
-        public void Add_NegativeNumber_ShouldThrowException(string numbers,string exceptionMessage)
+        public void Add_NegativeNumber_ShouldThrowException()
         {
             //Act
-            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => { calculator.Add(numbers); });
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => { calculator.Add("-2,10,-5"); });
 
             //Assert
-            Assert.AreEqual(exceptionMessage, exception.Message);
+            Assert.AreEqual("Specified argument was out of the range of valid values. (Parameter 'negative not allowed -2; -5; ')", exception.Message);
         }
 
         [Test]
@@ -88,7 +86,7 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_LongDelimeter_ShouldReturnSum()
+        public void Add_MultiCharacterDelimeter_ShouldSupportIt()
         {
             //Act
             var sum = calculator.Add("//****\n5****5");
@@ -98,20 +96,20 @@ namespace StringCalculator.Tests
         }
 
         [Test]
-        public void Add_ArrayOfDelimeter_ShouldReturnCorrectSum()
+        public void Add_ManyDelimiters_ShouldSupportIt()
         {
             //Act
-            var sum = calculator.Add("//[*][^]\n5*5^5");
+            var sum = calculator.Add("//[**][af]\n5**5af5");
 
             //Assert
             Assert.AreEqual(sum, 15);
         }
 
         [Test]
-        public void Add_ArrayLongDelimeters_ShouldReturnCorrectSum()
+        public void Add_SupportBracketAsDelimiter_ShouldSupportIt()
         {
             //Act
-            var sum = calculator.Add("//[**][af]\n5**5af5");
+            var sum = calculator.Add("//[]]\n5]5]5");
 
             //Assert
             Assert.AreEqual(sum, 15);
