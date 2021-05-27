@@ -11,17 +11,21 @@ namespace StringCalculator
 
         public virtual int Add(string numbers)
         {
-            SplitString(numbers, out numbers, out string delimiters_str);
+            numbers = DetachNumbers(numbers, out string delimiters_str);
 
-            var delimiters = ChangeDelimiters(delimiters_str);
-            var numberList = SplitNumbers(numbers, delimiters);
-            var dirtyNumbers = ToIntList(numberList);
-            var cleanNumbers = CleanList(dirtyNumbers, out string negativeNumbers);
+            var delimiters = SelectDelimiters(delimiters_str).ToArray();
+            var stringNumbers = numbers.Split(delimiters, StringSplitOptions.None);
+
+            if (String.IsNullOrEmpty(stringNumbers.First())) 
+                    return 0;
+
+            var unvalidNumbers = ToIntList(stringNumbers);
+            var validNumbers = RemoveNotValidNumbers(unvalidNumbers, out string negativeNumbers);
            
             if (negativeNumbers.Length > 0) 
                     throw new ArgumentOutOfRangeException("negative not allowed " + negativeNumbers);
 
-            return cleanNumbers.Sum();
+            return validNumbers.Sum();
         }
 
         /// <summary>
@@ -30,7 +34,7 @@ namespace StringCalculator
         /// <param name="numbers"></param>
         /// <param name="negativeNumbers"></param>
         /// <returns></returns>
-        private List<int> CleanList(in List<int> numbers, out string negativeNumbers)
+        private List<int> RemoveNotValidNumbers(in List<int> numbers, out string negativeNumbers)
         {
             negativeNumbers = "";
             foreach (var number in numbers)
@@ -40,52 +44,45 @@ namespace StringCalculator
                     negativeNumbers += number + "; ";
                 }
             }
-            numbers.RemoveAll(p => filter.IsNegative(p));
+            numbers.RemoveAll(p => filter.IsNegative(p) || filter.IsSoBigger(p));
 
             return numbers;
         }
-        private List<string> ChangeDelimiters(string delimiters_str)
+
+        private IEnumerable<string> SelectDelimiters(string delimiters_str)
         {
-            var delimiters = new List<string>() { ",","\n"};
-
-            if (delimiters_str.StartsWith("//"))
+            var foundDelimeters = FindDelimiters(delimiters_str);
+            if (foundDelimeters.Count != 0)
             {
-                var allDelimeters = FindAllDelimiters(delimiters_str);
-
-                if (allDelimeters.Count != 0)
-                {
-                    delimiters = allDelimeters;
-                }
-                else
-                {
-                    //2 and 1 because start with // and end with \n
-                    delimiters = new List<string>() { delimiters_str[2..(delimiters_str.Length - 1)] };
-                }
+               return foundDelimeters;
             }
-           
 
-            return delimiters;
+            if (String.IsNullOrEmpty(delimiters_str) == false)
+                         return new List<string>() { delimiters_str };
+
+            return new List<string>() { ",", "\n" };
         }
 
-        private bool SplitString(string inputString, out string numbers, out string delimeters_str)
+        private string DetachNumbers(string inputString, out string delimeters_str)
         {
-            //Setup default variable
-            numbers = inputString;
             delimeters_str = "";
 
-            string startDelimiters = "//";
-            string endDelimiters   = "\n";
-            int startPosDelimiters = inputString.IndexOf(startDelimiters);
-            int endPosDelimiters   = inputString.IndexOf(endDelimiters);
+            if (inputString.StartsWith("//") == false)
+                    return inputString;
 
-            if (startPosDelimiters == -1 || endPosDelimiters == -1) 
-                    return false;
+            var specialSymbols = new string[] { "//", "\n" };
+            var splittedStrings = inputString.Split(specialSymbols, StringSplitOptions.None);
 
-            delimeters_str = inputString.Substring(startPosDelimiters , endPosDelimiters + endDelimiters.Length);
-
-            numbers = inputString.Substring(endPosDelimiters + endDelimiters.Length, inputString.Length - endPosDelimiters - endDelimiters.Length);
-
-            return true;
+            if (splittedStrings.Length > 1)
+            {
+               // in splited array, numbers staying at second pos, delimiters at first pos
+                delimeters_str = splittedStrings[1];
+                return splittedStrings[2];
+            }
+            else
+            {
+                return splittedStrings[0];
+            }
         }
 
         /// <summary>
@@ -93,13 +90,13 @@ namespace StringCalculator
         /// </summary>
         /// <param name="delimiters"></param>
         /// <returns></returns>
-        private List<string> FindAllDelimiters(string delimiters)
+        private List<string> FindDelimiters(string delimiters)
         {
             List<string> splitedDelimiters = new List<string>();
 
             if (delimiters.IndexOf('[') == -1 && delimiters.IndexOf(']') == -1) return splitedDelimiters;
-            //Example //[x][a]\n => x][a
-            delimiters = delimiters[3..(delimiters.Length - 2)];
+            //Example [x][a] => x][a
+            delimiters = delimiters[1..(delimiters.Length - 1)];
 
             if (delimiters.Length == 1)
             {
@@ -113,37 +110,17 @@ namespace StringCalculator
             return splitedDelimiters;
         }
 
-        private List<int> ToIntList(in List<string> numbers)
+        private List<int> ToIntList(in string[] numbers)
         {
             List<int> convertedNumbers = new List<int>();
 
            foreach(var number in numbers)
             {
                 int number_int = Int32.Parse(number);
-
-                if (filter.IsSoBigger(number_int) == false)
-                        convertedNumbers.Add(number_int);
-
+                convertedNumbers.Add(number_int);
             }
 
             return convertedNumbers;
-        }
-        
-        private List<string> SplitNumbers(string numbers,List<string> delimiters)
-        {
-            List<string> numberList = new List<string>();
-            while (numbers.Length != 0)
-            {
-                int sizeDelimeter = 0;
-
-                string number = numbers.Substring(0, FindPositionDelimeter(numbers,delimiters, out sizeDelimeter));
-
-                numberList.Add(number);
-
-                numbers = numbers.Remove(0, number.Length + sizeDelimeter);
-            }
-
-            return numberList;
         }
 
         private int FindPositionDelimeter(string input,List<string> delimiters,out int sizeDelimeter)
