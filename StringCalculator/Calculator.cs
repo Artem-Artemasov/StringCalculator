@@ -122,26 +122,5 @@ namespace StringCalculator
 
             return convertedNumbers;
         }
-
-        private int FindPositionDelimeter(string input,List<string> delimiters,out int sizeDelimeter)
-        {
-            int minIndexDelimiter = input.Length;
-            sizeDelimeter = 0;
-
-            foreach (string delimeter in delimiters)
-            {
-                if ((input.IndexOf(delimeter) < minIndexDelimiter) && (input.IndexOf(delimeter) != -1))
-                {
-                    minIndexDelimiter = input.IndexOf(delimeter);
-                    sizeDelimeter = delimeter.Length;
-                }
-            }
-
-            if (minIndexDelimiter == -1) 
-                    minIndexDelimiter = input.Length;
-
-            return minIndexDelimiter;
-        }
-
     }
 }
