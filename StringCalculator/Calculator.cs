@@ -40,9 +40,8 @@ namespace StringCalculator
             foreach (var number in numbers)
             {
                 if (filter.IsNegative(number))
-                {
                     negativeNumbers += number + "; ";
-                }
+
             }
             numbers.RemoveAll(p => filter.IsNegative(p) || filter.IsSoBigger(p));
 
@@ -53,12 +52,11 @@ namespace StringCalculator
         {
             var foundDelimeters = FindDelimiters(delimiters_str);
             if (foundDelimeters.Count != 0)
-            {
-               return foundDelimeters;
-            }
+                    return foundDelimeters;
+
 
             if (String.IsNullOrEmpty(delimiters_str) == false)
-                         return new List<string>() { delimiters_str };
+                    return new List<string>() { delimiters_str };
 
             return new List<string>() { ",", "\n" };
         }
@@ -99,28 +97,24 @@ namespace StringCalculator
             delimiters = delimiters[1..(delimiters.Length - 1)];
 
             if (delimiters.Length == 1)
-            {
                 splitedDelimiters.Add(delimiters);
-            }
             else
-            {
                 splitedDelimiters = (delimiters.Split("][")).ToList();
-            }
 
             return splitedDelimiters;
         }
 
         private List<int> ToIntList(in string[] numbers)
         {
-            List<int> convertedNumbers = new List<int>();
+           List<int> convertedNumbers = new List<int>();
 
            foreach(var number in numbers)
-            {
+           {
                 int number_int = Int32.Parse(number);
                 convertedNumbers.Add(number_int);
-            }
+           }
 
-            return convertedNumbers;
+           return convertedNumbers;
         }
     }
 }
